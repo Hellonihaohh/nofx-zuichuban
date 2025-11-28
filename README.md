@@ -1,60 +1,209 @@
-# NOFX 自动化量化交易系统（初始版本）
+# NOFX – AI Automated Trading System (Early Version)
 
-NOFX 是一个基于 AI 的多策略自动化交易系统，支持现货、合约、网格、趋势、高频等多种交易方式。  
-本仓库用于存放 **NOFX 的最初开发版本（nofx-dev.zip）**，包含完整的后端逻辑、策略、API 接口、数据库结构、Docker 环境与运行脚本。
+NOFX is an AI-driven automated trading framework designed for futures/spot trading, high-frequency execution, and intelligent decision-making.  
+This repository contains the **initial development version**, packaged inside `nofx-dev.zip`.
 
----
-
-## 📦 当前版本内容说明
-
-仓库中包含的文件：
-
-- **nofx-dev.zip**  
-  - NOFX 最早期内部版本完整源码  
-  - 包含以下模块：
-    - `api/` —— 后端 API 接口  
-    - `auth/` —— 身份验证与 Token  
-    - `trader/` —— 交易执行引擎  
-    - `market/` —— 行情获取与处理  
-    - `scripts/` —— 工具脚本  
-    - `prompts/` —— AI 提示词系统  
-    - `docker/` —— Docker 容器与部署文件  
-    - `config/` —— 配置文件模板  
-    - `nginx/` —— 前端反向代理（部分版本包含）  
-    - 以及完整的服务运行逻辑与依赖  
-
-如需使用代码，请解压 `nofx-dev.zip` 后查看完整结构。
+This document explains how to install, configure, and use NOFX from scratch.
 
 ---
 
-## 🚀 功能简介
+# 📦 1. Download the Project
 
-### 🧠 1. AI 智能交易决策
-- 接入大模型（Claude / ChatGPT / DeepSeek）
-- 分析市场走势、结构、波动率、风险
-- 输出低延迟交易指令
+This repository includes:
 
-### ⚡ 2. 自动化交易引擎
-- 支持 **现货 / U本位合约 / 杠杆交易**
-- 自动下单、止盈、止损、移动止损
-- 具备完整风控与回滚机制
+nofx-dev.zip
 
-### 📊 3. 多策略框架
-支持以下策略原型：
-- 趋势追踪
-- 高频多单/空单切换
-- 网格套利
-- 区间震荡策略
-- AI 自适应混合策略
+yaml
+复制代码
 
-### 🧩 4. 模块化设计
-- API、策略、行情、风控、日志全模块化
-- 易于二次开发与扩展
+Download it, unzip it, and you will see:
+
+api/
+trader/
+config/
+docker/
+scripts/
+market/
+prompts/
+docker-compose.yml
+...
+
+yaml
+复制代码
+
+These are the full project files required to run NOFX.
 
 ---
 
-## 🐳 通过 Docker 快速启动（开发版）
-解压后可使用：
+# 🐳 2. Requirements
 
-```bash
+To run NOFX, the following are required:
+
+- **Docker 24+**
+- **Docker Compose v2**
+- At least **4GB RAM**
+- Linux / Windows / macOS supported
+
+Recommended server:
+
+- 2 CPU cores / 4GB RAM  
+- Ubuntu 22.04 LTS
+
+---
+
+# ⚙️ 3. Configure NOFX
+
+After unzipping, open the root project folder:
+
+cd nofx-dev/
+
+css
+复制代码
+
+Find the main configuration file:
+
+config/config.json
+
+csharp
+复制代码
+
+Edit it with your own API keys:
+
+```json
+{
+  "exchange": "binance",
+  "apiKey": "YOUR_API_KEY",
+  "secretKey": "YOUR_SECRET_KEY",
+  "password": "",
+  "symbol": "BTCUSDT",
+  "aiProvider": "openai",
+  "aiApiKey": "YOUR_AI_API_KEY"
+}
+Field explanation:
+Field	Description
+exchange	Trading exchange: binance / okx / bybit
+apiKey	API key from your exchange
+secretKey	Secret key from your exchange
+symbol	Trading pair (ex: BTCUSDT)
+aiProvider	AI model provider: openai / claude / deepseek
+aiApiKey	API key for the AI model
+
+⚠️ Important:
+Use demo/sandbox API keys for safety.
+
+🚀 4. Start NOFX
+Run the system using Docker:
+
+bash
+复制代码
 docker compose up -d --build
+This starts several services:
+
+Service	Description
+nofx-backend	Main backend and trading engine
+nofx-db	Database for logs and positions
+nofx-web (opt.)	API gateway or web layer
+
+Check logs:
+
+bash
+复制代码
+docker logs -f nofx-backend
+If you see:
+
+pgsql
+复制代码
+NOFX system started successfully
+AI engine online
+Exchange connection OK
+It is running correctly.
+
+🔥 5. How NOFX Works
+NOFX automatically performs:
+
+✔ 1. Market Analysis
+Fetches candles, volatility, volume, indicators, order flow, etc.
+
+✔ 2. AI Decision Making
+AI generates actionable instructions like:
+
+scss
+复制代码
+BUY(BTCUSDT, 0.01)
+STOPLOSS(61800)
+TAKEPROFIT(63100)
+✔ 3. Automated Order Execution
+Orders are placed through exchange API.
+
+✔ 4. Risk Control
+Stop loss, take profit, trailing stop and position monitoring.
+
+✔ 5. State Logging
+All activity is stored in the database.
+
+📊 6. Monitoring Trades
+To watch real-time trading activity:
+
+bash
+复制代码
+docker logs -f nofx-backend
+Example log output:
+
+csharp
+复制代码
+[AI] Market trend detected: bullish
+[Trade] Long BTCUSDT 0.01
+[Risk] Stop loss placed at 61800
+[System] Position opened successfully
+🛠 7. Project Directory Structure
+pgsql
+复制代码
+api/           → Backend API services
+auth/          → Authentication and token logic
+trader/        → Trading engine & order executor
+market/        → Market data collectors
+config/        → Main configuration files
+docker/        → Docker deployment files
+scripts/       → Utility scripts
+prompts/       → AI prompt templates
+logs/          → System & trade logs (generated after running)
+❓ 8. FAQ
+Q1: AI model returns errors?
+Check if your aiApiKey is valid and not expired.
+
+Q2: Orders cannot be placed?
+Possible reasons:
+
+API key missing trading permission
+
+Exchange requires IP whitelisting (common on OKX)
+
+Not enough balance
+
+Trading pair unavailable on the selected exchange
+
+Q3: Docker fails to start?
+Restart with:
+
+bash
+复制代码
+docker compose down
+docker compose up -d
+🌟 9. Upcoming Features
+Future improvements planned:
+
+UI dashboard (web version)
+
+Spot & futures grid trading
+
+Strategy optimizer powered by AI
+
+Multi-account support
+
+Automatic risk management upgrades
+
+Exchange support expansion
+
+🤝 10. Contribution
+Pull requests and issues are welcome.
+You may modify or extend the system based on your needs.
