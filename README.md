@@ -1,22 +1,19 @@
-# NOFX – AI Automated Trading System (Early Version)
+# NOFX – AI-Powered Automated Trading System (Initial Version)
 
-NOFX is an AI-driven automated trading framework designed for futures/spot trading, high-frequency execution, and intelligent decision-making.  
-This repository contains the **initial development version**, packaged inside `nofx-dev.zip`.
-
-This document explains how to install, configure, and use NOFX from scratch.
+NOFX is an AI-driven automated trading framework designed for futures/spot trading, trend detection, high-frequency execution, and intelligent trading decisions.  
+This repository contains the **initial development version** packaged as `nofx-dev.zip`.  
+Below is the quick start guide and full usage documentation.
 
 ---
 
-# 📦 1. Download the Project
+## 📦 1. Download & Extract
 
-This repository includes:
+Download the project files from this repository:
 
 nofx-dev.zip
 
-yaml
-复制代码
 
-Download it, unzip it, and you will see:
+Unzip it and you will see:
 
 api/
 trader/
@@ -28,46 +25,38 @@ prompts/
 docker-compose.yml
 ...
 
-yaml
-复制代码
-
-These are the full project files required to run NOFX.
 
 ---
 
-# 🐳 2. Requirements
+## 🐳 2. Requirements
 
-To run NOFX, the following are required:
+Before running NOFX, install:
 
-- **Docker 24+**
-- **Docker Compose v2**
-- At least **4GB RAM**
+- Docker 24+
+- Docker Compose v2
+- Minimum 4GB RAM
 - Linux / Windows / macOS supported
 
-Recommended server:
+Recommended environment:
 
-- 2 CPU cores / 4GB RAM  
-- Ubuntu 22.04 LTS
+- Ubuntu 22.04
+- 2 CPU cores / 4GB RAM
 
 ---
 
-# ⚙️ 3. Configure NOFX
+## ⚙️ 3. Configuration
 
-After unzipping, open the root project folder:
+Open the project directory:
 
 cd nofx-dev/
 
-css
-复制代码
 
-Find the main configuration file:
+Edit your configuration file:
 
 config/config.json
 
-csharp
-复制代码
 
-Edit it with your own API keys:
+Insert your exchange & AI API keys:
 
 ```json
 {
@@ -79,131 +68,132 @@ Edit it with your own API keys:
   "aiProvider": "openai",
   "aiApiKey": "YOUR_AI_API_KEY"
 }
-Field explanation:
-Field	Description
-exchange	Trading exchange: binance / okx / bybit
-apiKey	API key from your exchange
-secretKey	Secret key from your exchange
-symbol	Trading pair (ex: BTCUSDT)
-aiProvider	AI model provider: openai / claude / deepseek
-aiApiKey	API key for the AI model
-
-⚠️ Important:
-Use demo/sandbox API keys for safety.
-
+| Field      | Description                                   |
+| ---------- | --------------------------------------------- |
+| exchange   | Trading exchange: binance / okx / bybit       |
+| apiKey     | API key from your exchange                    |
+| secretKey  | Secret key from your exchange                 |
+| symbol     | Trading pair (example: BTCUSDT)               |
+| aiProvider | AI model provider: openai / claude / deepseek |
+| aiApiKey   | API key for the AI model                      |
+⚠ Important:
+Use demo / sandbox API keys for safety.
 🚀 4. Start NOFX
+
 Run the system using Docker:
-
-bash
-复制代码
 docker compose up -d --build
-This starts several services:
-
-Service	Description
-nofx-backend	Main backend and trading engine
-nofx-db	Database for logs and positions
-nofx-web (opt.)	API gateway or web layer
+| Service         | Description                     |
+| --------------- | ------------------------------- |
+| nofx-backend    | Main backend and trading engine |
+| nofx-db         | Database for logs and positions |
+| nofx-web (opt.) | Web gateway / API layer         |
 
 Check logs:
 
-bash
-复制代码
 docker logs -f nofx-backend
-If you see:
 
-pgsql
-复制代码
+Expected successful output:
+
 NOFX system started successfully
 AI engine online
 Exchange connection OK
-It is running correctly.
 
 🔥 5. How NOFX Works
-NOFX automatically performs:
+
+NOFX automatically executes:
 
 ✔ 1. Market Analysis
-Fetches candles, volatility, volume, indicators, order flow, etc.
 
-✔ 2. AI Decision Making
-AI generates actionable instructions like:
+Fetches candles, volatility, volume, market structure, trends, etc.
 
-scss
-复制代码
+✔ 2. AI Trading Decisions
+
+Example instructions:
+
 BUY(BTCUSDT, 0.01)
 STOPLOSS(61800)
 TAKEPROFIT(63100)
+
 ✔ 3. Automated Order Execution
-Orders are placed through exchange API.
 
-✔ 4. Risk Control
-Stop loss, take profit, trailing stop and position monitoring.
+Orders are sent to your exchange in real time.
 
-✔ 5. State Logging
-All activity is stored in the database.
+✔ 4. Risk Management
 
-📊 6. Monitoring Trades
-To watch real-time trading activity:
+Stop loss
 
-bash
-复制代码
+Take profit
+
+Trailing stop
+
+Position validation
+
+✔ 5. Logging & Data Storage
+
+Stored inside the database for future analytics.
+
+📊 6. Monitoring Live Trades
+
+Use:
 docker logs -f nofx-backend
 Example log output:
-
-csharp
-复制代码
-[AI] Market trend detected: bullish
-[Trade] Long BTCUSDT 0.01
-[Risk] Stop loss placed at 61800
+[AI] Market trend: bullish
+[Trade] Executing LONG order 0.01 BTCUSDT
+[Risk] Applied stop loss at 61800
 [System] Position opened successfully
-🛠 7. Project Directory Structure
-pgsql
-复制代码
-api/           → Backend API services
-auth/          → Authentication and token logic
-trader/        → Trading engine & order executor
-market/        → Market data collectors
-config/        → Main configuration files
-docker/        → Docker deployment files
-scripts/       → Utility scripts
-prompts/       → AI prompt templates
-logs/          → System & trade logs (generated after running)
-❓ 8. FAQ
-Q1: AI model returns errors?
-Check if your aiApiKey is valid and not expired.
 
-Q2: Orders cannot be placed?
+🛠 7. Folder Structure
+api/            → Backend API services  
+auth/           → Authentication & token management  
+trader/         → Trading engine  
+market/         → Market data collector  
+config/         → Configuration files  
+docker/         → Docker environment  
+scripts/        → Helper scripts  
+prompts/        → AI prompt templates  
+logs/           → System logs (generated)  
+
+❓ 8. FAQ
+Q1: AI model fails or returns errors?
+
+Check aiApiKey and provider name.
+
+Q2: Orders are not executed?
+
 Possible reasons:
 
-API key missing trading permission
+Wrong API permissions
 
-Exchange requires IP whitelisting (common on OKX)
+Exchange requires IP whitelisting
 
-Not enough balance
+Insufficient balance
 
-Trading pair unavailable on the selected exchange
+Trading pair not enabled for futures
 
-Q3: Docker fails to start?
+Q3: Docker crashes or fails to start?
+
 Restart with:
-
-bash
-复制代码
 docker compose down
 docker compose up -d
-🌟 9. Upcoming Features
-Future improvements planned:
 
-UI dashboard (web version)
+🌟 9. Future Updates
 
-Spot & futures grid trading
+Planned improvements:
 
-Strategy optimizer powered by AI
+Web dashboard UI
 
-Multi-account support
+Grid trading (spot/futures)
 
-Automatic risk management upgrades
+Smart strategy optimizer
 
-Exchange support expansion
+Multi-account mode
+
+Deeper AI integration
+
+More supported exchanges
 
 🤝 10. Contribution
-Pull requests and issues are welcome.
-You may modify or extend the system based on your needs.
+
+Pull Requests and Issues are welcome.
+You may modify or extend NOFX based on your own trading needs.
+📬 
